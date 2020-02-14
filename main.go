@@ -16,10 +16,6 @@ type Student struct {
 	Attendance    int
 }
 
-// func NewStudent(studentID, name string, finalScore float32, grade string, midScore,semesterScore, attendanceScore int) Student{
-// 	Steud
-// }
-
 func validateNumber(param string) (valid bool, value int) {
 	result, err := strconv.Atoi(param)
 	if err != nil {
@@ -51,13 +47,32 @@ func calculateGrade(finalScore float32) string {
 }
 
 func printHeader() {
-	fmt.Println("=============================================================")
+	fmt.Println("==========================================================================")
 	fmt.Print("No. \t")
 	fmt.Print("Student ID. \t")
-	fmt.Print("Name. \t")
+	fmt.Print("Name. \t\t")
 	fmt.Print("Final Score. \t")
 	fmt.Println("Grade")
-	fmt.Println("=============================================================")
+	fmt.Println("==========================================================================")
+}
+
+func printBody(students []Student) {
+	for i := 0; i < len(students); i++ {
+		fmt.Printf("%d \t", i+1)
+		fmt.Printf("%s \t\t", students[i].StudentID)
+		fmt.Printf("%s \t\t", students[i].Name)
+		fmt.Printf("%.0f \t\t", students[i].FinalScore)
+		fmt.Printf("%s \t", students[i].Grade)
+		fmt.Println()
+	}
+}
+
+func printFooter(studentCount, studentPass, studentFail int) {
+	fmt.Println("==========================================================================")
+	fmt.Printf("Number of Students\t\t: %d\n", studentCount)
+	fmt.Printf("Number of Passing Students\t: %d\n", studentPass)
+	fmt.Printf("Number of Failed Students\t: %d\n", studentFail)
+	fmt.Println("==========================================================================")
 }
 
 func main() {
@@ -77,6 +92,8 @@ func main() {
 	}
 
 	var students = make([]Student, 0)
+	var studentPass int = 0
+	var studentFail int = 0
 
 	for i := 0; i < studentCount; i++ {
 		var (
@@ -89,6 +106,7 @@ func main() {
 			attendanceScore int
 		)
 
+		fmt.Printf("\n\n=========Student %d=========\n", i+1)
 		fmt.Print("Student Id: ")
 		fmt.Scan(&studentID)
 		fmt.Print("Name: ")
@@ -101,17 +119,16 @@ func main() {
 		fmt.Scan(&attendanceScore)
 
 		finalScore = calculateFinalScore(midScore, semesterScore, attendanceScore)
+		if finalScore < 61 {
+			studentFail++
+		} else {
+			studentPass++
+		}
 		grade = calculateGrade(finalScore)
 		students = append(students, Student{StudentID: studentID, Name: name, MidScore: midScore, SemesterScore: semesterScore, Attendance: attendanceScore, Grade: grade, FinalScore: finalScore})
 	}
 
 	printHeader()
-	for i := 0; i < len(students); i++ {
-		fmt.Printf("%d \t", i+1)
-		fmt.Printf("%s \t", students[i].StudentID)
-		fmt.Printf("%s \t", students[i].Name)
-		fmt.Printf("%.0f \t\t", students[i].FinalScore)
-		fmt.Printf("%s \t", students[i].Grade)
-		fmt.Println()
-	}
+	printBody(students)
+	printFooter(studentCount, studentPass, studentFail)
 }
