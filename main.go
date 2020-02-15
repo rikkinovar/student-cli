@@ -47,7 +47,7 @@ func calculateGrade(finalScore float32) string {
 }
 
 func printHeader() {
-	fmt.Println("==========================================================================")
+	fmt.Println("\n\n\n==========================================================================")
 	fmt.Print("No. \t")
 	fmt.Print("Student ID. \t")
 	fmt.Print("Name. \t\t")
@@ -75,21 +75,27 @@ func printFooter(studentCount, studentPass, studentFail int) {
 	fmt.Println("==========================================================================")
 }
 
-func main() {
-
-	var studentCountParam string
-	var studentCount int
-	fmt.Print("Input the number of students:")
+func scanNumber() int {
+	var inputNumber string
+	var result int
 	for {
-		fmt.Scan(&studentCountParam)
-		valid, value := validateNumber(studentCountParam)
+		fmt.Scan(&inputNumber)
+		valid, value := validateNumber(inputNumber)
 		if !valid {
 			fmt.Println("invalid number, please re-input: ")
 		} else {
-			studentCount = value
+			result = value
 			break
 		}
 	}
+	return result
+}
+
+func main() {
+
+	var studentCount int
+	fmt.Print("Input the number of students:")
+	studentCount = scanNumber()
 
 	var students = make([]Student, 0)
 	var studentPass int = 0
@@ -112,11 +118,11 @@ func main() {
 		fmt.Print("Name: ")
 		fmt.Scan(&name)
 		fmt.Print("Mid Term Test Score: ")
-		fmt.Scan(&midScore)
+		midScore = scanNumber()
 		fmt.Print("Semester Test Score: ")
-		fmt.Scan(&semesterScore)
+		semesterScore = scanNumber()
 		fmt.Print("Attendance: ")
-		fmt.Scan(&attendanceScore)
+		attendanceScore = scanNumber()
 
 		finalScore = calculateFinalScore(midScore, semesterScore, attendanceScore)
 		if finalScore < 61 {
