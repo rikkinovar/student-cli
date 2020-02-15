@@ -16,7 +16,14 @@ type Student struct {
 	Attendance    int
 }
 
-func validateNumber(param string) (valid bool, value int) {
+func validateScore(score int) bool {
+	if score > 100 || score < 0 {
+		return false
+	}
+	return true
+}
+
+func validateNumber(param string) (valid bool, value int, message string) {
 	result, err := strconv.Atoi(param)
 	if err != nil {
 		valid = false
@@ -75,14 +82,26 @@ func printFooter(studentCount, studentPass, studentFail int) {
 	fmt.Println("==========================================================================")
 }
 
-func scanNumber() int {
+func scanNumber(isScore bool) int {
 	var inputNumber string
 	var result int
 	for {
 		fmt.Scan(&inputNumber)
-		valid, value := validateNumber(inputNumber)
+		valid, value, msg := validateNumber(inputNumber)
 		if !valid {
-			fmt.Println("invalid number, please re-input: ")
+			if msg == "" {
+				fmt.Println("invalid number, please re-input: ")
+			} else {
+				fmt.Println(msg + ", please re-input: ")
+			}
+		} else if isScore {
+			valid = validateScore(value)
+			if !valid {
+				fmt.Println("valid score is 0 - 100, please re-input: ")
+			} else {
+				result = value
+				break
+			}
 		} else {
 			result = value
 			break
@@ -95,7 +114,7 @@ func main() {
 
 	var studentCount int
 	fmt.Print("Input the number of students:")
-	studentCount = scanNumber()
+	studentCount = scanNumber(false)
 
 	var students = make([]Student, 0)
 	var studentPass int = 0
@@ -118,11 +137,11 @@ func main() {
 		fmt.Print("Name: ")
 		fmt.Scan(&name)
 		fmt.Print("Mid Term Test Score: ")
-		midScore = scanNumber()
+		midScore = scanNumber(true)
 		fmt.Print("Semester Test Score: ")
-		semesterScore = scanNumber()
+		semesterScore = scanNumber(true)
 		fmt.Print("Attendance: ")
-		attendanceScore = scanNumber()
+		attendanceScore = scanNumber(true)
 
 		finalScore = calculateFinalScore(midScore, semesterScore, attendanceScore)
 		if finalScore < 61 {
